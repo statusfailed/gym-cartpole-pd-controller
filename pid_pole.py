@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 import gymnasium as gym
 
-env = gym.make("CartPole-v1", render_mode="human")
-observation, info = env.reset()
-
 class PD:
     def __init__(self, kp, kd, goal):
         self.kp = kp
@@ -20,10 +17,13 @@ class PD:
 if __name__ == "__main__":
     controller = PD(kp=5, kd=100, goal=0)
 
+    env = gym.make("CartPole-v1", render_mode="human")
+    observation, info = env.reset()
+
     for _ in range(1000):
         pole_angle = observation[2]
         control_output = controller.observe(pole_angle)
-        action = int(control_output < 0)
+        action = 1 if control_output < 0 else 0
 
         observation, reward, terminated, truncated, info = env.step(action)
         if terminated or truncated:
